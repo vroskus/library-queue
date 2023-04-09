@@ -18,7 +18,11 @@ import type {
 
 export type $Config = Config;
 
-class Queue<C extends Config, T extends Record<string, any>, P extends Record<string, any>> {
+class Queue<
+C extends Config,
+T extends Record<string, unknown>,
+P extends Record<string, unknown>,
+> {
   host: string;
 
   connection: $Connection | null;
@@ -46,7 +50,7 @@ class Queue<C extends Config, T extends Record<string, any>, P extends Record<st
     this.connection.on(
       'close',
       async () => {
-      // eslint-disable-next-line no-console
+        // eslint-disable-next-line no-console
         console.info(
           'Queue connection closed',
           type,
