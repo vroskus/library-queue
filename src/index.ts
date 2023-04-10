@@ -20,8 +20,8 @@ export type $Config = Config;
 
 class Queue<
 C extends Config,
-T extends Record<string, unknown>,
-P extends Record<string, unknown>,
+T extends Record<string, string>,
+P extends Record<string, string>,
 > {
   host: string;
 
