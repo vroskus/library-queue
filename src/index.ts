@@ -66,10 +66,12 @@ P extends Record<string, unknown>,
 
   async initConsumer<QET extends T[keyof T]>({
     action,
+    requeue,
     type,
   }: {
     type: QET;
-    action: (params: P[QET]) => unknown;
+    requeue?: boolean,
+    action: (params: P[QET]) => Promise<void>;
   }): Promise<void> {
     if (this.host !== '') {
       await this.connect(type);
@@ -101,17 +103,35 @@ P extends Record<string, unknown>,
               params,
             );
 
-            await action(params);
+            await action(params)
+              .then(
+                () => {
+                // eslint-disable-next-line no-console
+                  console.info(
+                    'Queue task done',
+                    code,
+                    type,
+                    getDuration(start),
+                  );
 
-            // eslint-disable-next-line no-console
-            console.info(
-              'Queue task done',
-              code,
-              type,
-              getDuration(start),
-            );
+                  channel.ack(message);
+                },
+                () => {
+                  // eslint-disable-next-line no-console
+                  console.info(
+                    'Queue task failed',
+                    code,
+                    type,
+                    getDuration(start),
+                  );
 
-            channel.ack(message);
+                  channel.nack(
+                    message,
+                    false,
+                    requeue !== false,
+                  );
+                },
+              );
           }
         },
       );
