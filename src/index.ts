@@ -11,9 +11,9 @@ import {
 // Types
 import type {
   $Channel,
-  $Config as Config,
   $Connection,
   $Message,
+  $Config as Config,
 } from './types';
 
 export type $Config = Config;
@@ -69,9 +69,9 @@ P extends Record<string, unknown>,
     requeue,
     type,
   }: {
-    type: QET;
-    requeue?: boolean,
     action: (params: P[QET]) => Promise<void>;
+    requeue?: boolean,
+    type: QET;
   }): Promise<void> {
     if (this.host !== '') {
       await this.connect(type);
@@ -145,8 +145,8 @@ P extends Record<string, unknown>,
     params,
     type,
   }: {
-    type: QET;
     params: P[QET];
+    type: QET;
   }): Promise<void> {
     if (this.host !== '') {
       await this.connect(type);
