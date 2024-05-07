@@ -36,9 +36,11 @@ P extends Record<string, unknown>,
   }: C, type: T) {
     this.host = host;
     this.type = type;
-    // @ts-ignore
+    // @ts-expect-error mocks
     this.mockConsumers = {
     };
+
+    this.connection = null;
   }
 
   async connect(type: T[keyof T]): Promise<void> {
@@ -73,7 +75,7 @@ P extends Record<string, unknown>,
     requeue?: boolean,
     type: QET;
   }): Promise<void> {
-    if (this.host !== '') {
+    if (this.host !== '' && this.connection !== null) {
       await this.connect(type);
 
       const channel: $Channel = await openChannel(
@@ -85,7 +87,7 @@ P extends Record<string, unknown>,
 
       await channel.consume(
         type,
-        async (message: $Message): Promise<void> => {
+        async (message: $Message | null): Promise<void> => {
           if (message !== null) {
             const params = JSON.parse(message.content.toString());
             const start = process.hrtime();
@@ -136,7 +138,7 @@ P extends Record<string, unknown>,
         },
       );
     } else {
-      // mock mode
+      // @ts-expect-error mocks
       this.mockConsumers[type] = action;
     }
   }
@@ -148,7 +150,7 @@ P extends Record<string, unknown>,
     params: P[QET];
     type: QET;
   }): Promise<void> {
-    if (this.host !== '') {
+    if (this.host !== '' && this.connection !== null) {
       await this.connect(type);
 
       const channel: $Channel = await openChannel(

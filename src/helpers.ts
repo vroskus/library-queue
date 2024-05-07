@@ -34,13 +34,13 @@ export const openConnection = async (
       } catch (err) {
         // eslint-disable-next-line no-console
         console.info(
-          'Queue unable to connect',
+          'Queue unable to connect, retrying...',
           purpose,
           error,
           `try: ${t}`,
         );
 
-        error = err;
+        error = err as Error;
 
         await sleep(1000);
       }
@@ -51,7 +51,7 @@ export const openConnection = async (
     return connection;
   }
 
-  throw error;
+  throw Error('Queue was unable to connect');
 };
 
 export const openChannel = (
