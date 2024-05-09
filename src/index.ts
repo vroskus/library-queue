@@ -44,26 +44,28 @@ P extends Record<string, unknown>,
   }
 
   async connect(type: T[keyof T]): Promise<void> {
-    this.connection = await openConnection(
-      this.host,
-      type,
-    );
+    if (this.host !== '') {
+      this.connection = await openConnection(
+        this.host,
+        type,
+      );
 
-    this.connection.on(
-      'close',
-      async () => {
-        // eslint-disable-next-line no-console
-        console.info(
-          'Queue connection closed',
-          type,
-        );
+      this.connection.on(
+        'close',
+        async () => {
+          // eslint-disable-next-line no-console
+          console.info(
+            'Queue connection closed',
+            type,
+          );
 
-        this.connection = await openConnection(
-          this.host,
-          type,
-        );
-      },
-    );
+          this.connection = await openConnection(
+            this.host,
+            type,
+          );
+        },
+      );
+    }
   }
 
   async initConsumer<QET extends T[keyof T]>({
@@ -75,9 +77,9 @@ P extends Record<string, unknown>,
     requeue?: boolean,
     type: QET;
   }): Promise<void> {
-    if (this.host !== '' && this.connection !== null) {
-      await this.connect(type);
+    await this.connect(type);
 
+    if (this.connection !== null) {
       const channel: $Channel = await openChannel(
         this.connection,
         type,
@@ -150,9 +152,9 @@ P extends Record<string, unknown>,
     params: P[QET];
     type: QET;
   }): Promise<void> {
-    if (this.host !== '' && this.connection !== null) {
-      await this.connect(type);
+    await this.connect(type);
 
+    if (this.connection !== null) {
       const channel: $Channel = await openChannel(
         this.connection,
         type,
