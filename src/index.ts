@@ -172,6 +172,7 @@ P extends Record<string, unknown>,
         type,
         Buffer.from(JSON.stringify(params)),
       );
+      await channel.close();
     } else {
       // mock mode
       const mockConsumer = this.mockConsumers[type];
