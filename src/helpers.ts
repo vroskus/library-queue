@@ -13,6 +13,9 @@ import type {
 } from './types';
 
 const tries = 100;
+const zeroValue: number = 0;
+const oneValue: number = 1;
+const sleepDuration: number = 1000;
 
 export const openConnection = async (
   host: string,
@@ -21,18 +24,16 @@ export const openConnection = async (
   let connection: $Connection | null = null;
   let error: Error | null = null;
 
-  for (let t = 0; t < tries; t += 1) {
+  for (let t = zeroValue; t < tries; t += oneValue) {
     if (connection === null) {
       try {
         connection = await connect(host);
 
-        // eslint-disable-next-line no-console
         console.info(
           'Queue new connection',
           purpose,
         );
       } catch (err) {
-        // eslint-disable-next-line no-console
         console.info(
           'Queue unable to connect, retrying...',
           purpose,
@@ -42,7 +43,7 @@ export const openConnection = async (
 
         error = err as Error;
 
-        await sleep(1000);
+        await sleep(sleepDuration);
       }
     }
   }
@@ -54,29 +55,26 @@ export const openConnection = async (
   throw Error('Queue was unable to connect');
 };
 
-export const openChannel = (
+export const openChannel = async (
   connection: $Connection,
   purpose: string,
-): Promise<$Channel> => new Promise((resolve, reject) => {
-  connection.createChannel().then(
-    (channel: $Channel) => {
-    // eslint-disable-next-line no-console
-      console.info(
-        'Queue new channel created',
-        purpose,
-      );
+): Promise<$Channel> => {
+  try {
+    const channel = await connection.createChannel();
 
-      resolve(channel);
-    },
-    (error) => {
-    // eslint-disable-next-line no-console
-      console.info(
-        'Queue unable to create channel',
-        purpose,
-        error,
-      );
+    console.info(
+      'Queue new channel created',
+      purpose,
+    );
 
-      reject(error);
-    },
-  );
-});
+    return channel;
+  } catch (error) {
+    console.info(
+      'Queue unable to create channel',
+      purpose,
+      error,
+    );
+
+    throw error;
+  }
+};

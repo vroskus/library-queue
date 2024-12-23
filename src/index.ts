@@ -53,7 +53,6 @@ P extends Record<string, unknown>,
       this.connection.on(
         'close',
         async () => {
-          // eslint-disable-next-line no-console
           console.info(
             'Queue connection closed',
             type,
@@ -74,7 +73,7 @@ P extends Record<string, unknown>,
     type,
   }: {
     action: (params: P[QET]) => Promise<void>;
-    requeue?: boolean,
+    requeue?: boolean;
     type: QET;
   }): Promise<void> {
     await this.connect(type);
@@ -99,7 +98,6 @@ P extends Record<string, unknown>,
               type,
             }));
 
-            // eslint-disable-next-line no-console
             console.info(
               'Queue task consumed',
               code,
@@ -110,7 +108,6 @@ P extends Record<string, unknown>,
             await action(params)
               .then(
                 () => {
-                // eslint-disable-next-line no-console
                   console.info(
                     'Queue task done',
                     code,
@@ -121,7 +118,6 @@ P extends Record<string, unknown>,
                   channel.ack(message);
                 },
                 () => {
-                  // eslint-disable-next-line no-console
                   console.info(
                     'Queue task failed',
                     code,
@@ -160,7 +156,6 @@ P extends Record<string, unknown>,
         type,
       );
 
-      // eslint-disable-next-line no-console
       console.info(
         'Queue task produced',
         type,
@@ -178,7 +173,6 @@ P extends Record<string, unknown>,
       const mockConsumer = this.mockConsumers[type];
 
       if (mockConsumer) {
-        // eslint-disable-next-line no-console
         console.info(
           'Queue task consumed',
           type,
