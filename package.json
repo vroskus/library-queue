@@ -20,14 +20,14 @@
     "test:e2e": "echo 'No tests'"
   },
   "dependencies": {
-    "@vroskus/library-helpers": "^1.0.25",
-    "amqplib": "^0.10.5"
+    "@vroskus/library-helpers": "^1.0.26",
+    "amqplib": "^0.10.7"
   },
   "devDependencies": {
-    "@types/amqplib": "^0.10.6",
+    "@types/amqplib": "^0.10.7",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.10.2",
-    "@vroskus/eslint-config": "^1.0.23",
-    "typescript": "^5.7.2"
+    "@types/node": "^22.14.0",
+    "@vroskus/eslint-config": "^1.0.25",
+    "typescript": "^5.8.3"
   }
 }
