@@ -105,33 +105,33 @@ P extends Record<string, unknown>,
               params,
             );
 
-            await action(params)
-              .then(
-                () => {
-                  console.info(
-                    'Queue task done',
-                    code,
-                    type,
-                    getDuration(start),
-                  );
+            try {
+              await action(params);
 
-                  channel.ack(message);
-                },
-                () => {
-                  console.info(
-                    'Queue task failed',
-                    code,
-                    type,
-                    getDuration(start),
-                  );
-
-                  channel.nack(
-                    message,
-                    false,
-                    requeue !== false,
-                  );
-                },
+              console.info(
+                'Queue task done',
+                code,
+                type,
+                getDuration(start),
               );
+
+              channel.ack(message);
+            } catch (error) {
+              console.info(
+                'Queue task failed',
+                code,
+                type,
+                getDuration(start),
+              );
+
+              channel.nack(
+                message,
+                false,
+                requeue !== false,
+              );
+
+              throw error;
+            }
           }
         },
       );
