@@ -21,7 +21,7 @@
     "test:e2e": "echo 'No tests'"
   },
   "dependencies": {
-    "@vroskus/library-helpers": "^1.0.28",
+    "@vroskus/library-helpers": "^1.0.29",
     "amqplib": "^0.10.9"
   },
   "devDependencies": {
